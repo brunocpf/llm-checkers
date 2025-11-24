@@ -49,37 +49,70 @@ export default function CheckersGameControls() {
   });
 
   return (
-    <div className="flex flex-col items-center justify-center py-2">
-      <div className="mb-4 flex justify-center">
+    <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-slate-800 bg-linear-to-br from-slate-950/90 via-slate-900/70 to-slate-900/40 p-4 text-slate-100 shadow-2xl shadow-black/40 backdrop-blur">
+      <div className="flex w-full items-center justify-between gap-3">
+        <div className="flex flex-col">
+          <span className="text-xs tracking-[0.15em] text-slate-400 uppercase select-none">
+            Status
+          </span>
+          <span className="text-base font-semibold">
+            {status === "idle" && "Waiting to start"}
+            {status === "in-progress" && "Game in progress"}
+          </span>
+        </div>
         <button
-          className="cursor-pointer rounded-xl bg-green-600 px-4 py-2 text-white hover:bg-green-700 active:bg-green-800"
+          className="cursor-pointer rounded-xl bg-linear-to-r from-emerald-500 to-lime-400 px-4 py-2 text-sm font-semibold text-emerald-950 shadow-lg shadow-emerald-500/40 transition-[transform,translate,box-shadow] duration-150 hover:-translate-y-0.5 hover:shadow-lime-400/50 active:translate-y-0"
           onClick={() => startGame(8, 8)}
         >
           Start New Game
         </button>
       </div>
 
-      {status === "idle" ? (
-        <p className="my-4 text-lg">Game is not started.</p>
-      ) : status === "in-progress" ? (
-        <p className="my-4 text-lg">
-          {currentPlayer === "black" && "Current Player: Black"}
-          {currentPlayer === "white" && "Current Player: White"}
-        </p>
-      ) : null}
+      <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className="rounded-xl border border-slate-800/70 bg-slate-900/60 p-3 shadow-inner shadow-black/30">
+          <div className="text-xs tracking-widest text-slate-400 uppercase">
+            Current Player
+          </div>
+          <div className="mt-1 inline-flex items-center gap-3 text-lg font-semibold">
+            {status === "idle" ? (
+              "-"
+            ) : currentPlayer === "black" ? (
+              <>
+                <span className="h-3 w-3 rounded-full bg-linear-to-br from-slate-950 via-slate-900 to-slate-700 text-slate-100 ring-2 ring-slate-100/70" />
+                Black
+              </>
+            ) : (
+              <>
+                <span className="h-3 w-3 rounded-full bg-linear-to-br from-amber-50 via-amber-100 to-amber-300 text-amber-900 ring-2 ring-amber-700/70" />
+                White
+              </>
+            )}
+          </div>
+        </div>
+        <div className="rounded-xl border border-slate-800/70 bg-slate-900/60 p-3 shadow-inner shadow-black/30 sm:col-span-1">
+          <div className="text-xs tracking-widest text-slate-400 uppercase select-none">
+            Captured Pieces
+          </div>
+          <div className="mt-2 flex items-center gap-3 font-mono text-sm font-semibold">
+            <span className="inline-flex items-center gap-2 rounded-full bg-slate-800 px-3 py-1">
+              <span className="h-3 w-3 rounded-full bg-linear-to-br from-slate-950 via-slate-900 to-slate-700 text-slate-100 ring-2 ring-slate-100/70" />
+              Black: {status === "idle" ? "-" : captured.black.length}
+            </span>
+            <span className="inline-flex items-center gap-2 rounded-full bg-slate-800 px-3 py-1">
+              <span className="h-3 w-3 rounded-full bg-linear-to-br from-amber-50 via-amber-100 to-amber-300 text-amber-900 ring-2 ring-amber-700/70" />
+              White: {status === "idle" ? "-" : captured.white.length}
+            </span>
+          </div>
+        </div>
+      </div>
 
-      <p className="my-4 text-lg">
+      <div className="w-full rounded-xl border border-slate-800/70 bg-slate-900/60 p-3 text-sm text-slate-200 shadow-inner shadow-black/30">
         {aiIsThinking
-          ? "AI is thinking..."
+          ? "AI is evaluating the board…"
           : status !== "idle"
-            ? "Make a move"
-            : "-"}
-      </p>
-
-      <p className="text-lg">
-        Black: {status === "idle" ? "-" : captured.black.length} | White:{" "}
-        {status === "idle" ? "-" : captured.white.length}
-      </p>
+            ? "Select a piece to see valid moves."
+            : 'Press "Start New Game" to begin a new match.'}
+      </div>
     </div>
   );
 }

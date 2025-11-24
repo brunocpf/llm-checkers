@@ -2,6 +2,8 @@
 
 An experiment in building a modern checkers game with React 19 and Next.js 16. It mixes new platform features (View Transitions API, CSS Anchor Positioning, server actions/functions) with structured AI decision-making powered by the Vercel AI SDK.
 
+![Screenshot of llm-checkers game in progress, showing a checkers board with pieces and captured pieces count](./screenshots/screenshot_1.png)
+
 ## Tech Stack
 
 - Next.js 16 App Router with server functions (`"use server"`) for AI turns

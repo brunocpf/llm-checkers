@@ -19,7 +19,7 @@ export function CheckersBoard() {
   )?.position;
 
   return (
-    <>
+    <div className="aspect-square w-full max-w-120 min-w-80">
       <div
         className="grid h-full w-full grid-cols-[repeat(var(--checkers-columns,1),minmax(0,1fr))] grid-rows-[repeat(var(--checkers-rows,1),minmax(0,1fr))] gap-1 rounded-2xl border border-slate-800 bg-linear-to-br from-slate-950 via-slate-900 to-slate-800 p-1 shadow-2xl shadow-black/50"
         style={{
@@ -88,6 +88,6 @@ export function CheckersBoard() {
           }}
         />
       ))}
-    </>
+    </div>
   );
 }
