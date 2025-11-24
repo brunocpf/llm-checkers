@@ -1,4 +1,4 @@
-import CheckersGame from "@/components/checkers-game";
+import { CheckersGame } from "@/components/checkers-game";
 
 export default function Home() {
   return (
