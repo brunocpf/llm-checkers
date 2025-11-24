@@ -14,11 +14,14 @@ export function CheckersBoard() {
   const highlightedPositions = selectedPieceId
     ? getValidMoves(selectedPieceId)
     : [];
+  const selectedPiecePosition = pieces.find(
+    (piece) => piece.id === selectedPieceId,
+  )?.position;
 
   return (
     <>
       <div
-        className="grid h-full w-full grid-cols-[repeat(var(--checkers-columns,1),minmax(0,1fr))] grid-rows-[repeat(var(--checkers-rows,1),minmax(0,1fr))] gap-0.5 bg-black p-0.5"
+        className="grid h-full w-full grid-cols-[repeat(var(--checkers-columns,1),minmax(0,1fr))] grid-rows-[repeat(var(--checkers-rows,1),minmax(0,1fr))] gap-1 rounded-2xl border border-slate-800 bg-linear-to-br from-slate-950 via-slate-900 to-slate-800 p-1 shadow-2xl shadow-black/50"
         style={{
           ["--checkers-rows" as keyof React.CSSProperties]: rows,
           ["--checkers-columns" as keyof React.CSSProperties]: columns,
@@ -31,16 +34,27 @@ export function CheckersBoard() {
           const squarePosition = isDarkSquare
             ? Math.floor(index / 2) + 1
             : null;
+          const highlight = highlightedPositions.find(
+            (pos) => pos.to === squarePosition,
+          );
 
           return (
             <div
               key={index}
               className={cn(
-                "relative border-2 border-gray-200 hover:bg-yellow-400/20",
-                isDarkSquare ? "bg-gray-800" : "bg-gray-200",
-                highlightedPositions
-                  .map((pos) => pos.to)
-                  .includes(squarePosition || -1) && "bg-yellow-400/40",
+                "relative rounded-md border transition-colors duration-150",
+                isDarkSquare
+                  ? "border-slate-800 bg-linear-to-br from-slate-700 to-slate-800"
+                  : "border-slate-300/40 bg-linear-to-br from-slate-200 to-slate-100",
+                squarePosition &&
+                  selectedPiecePosition === squarePosition &&
+                  "ring-2 ring-cyan-300/80",
+                highlight &&
+                  (highlight.isCapture
+                    ? "shadow-inner ring-4 shadow-rose-900/30 ring-rose-400/70"
+                    : "ring-2 ring-amber-300/80"),
+                highlight &&
+                  "after:absolute after:inset-2 after:rounded-md after:bg-amber-200/20 after:content-['']",
               )}
               style={{
                 anchorName: squarePosition
@@ -49,13 +63,13 @@ export function CheckersBoard() {
               }}
               onClick={() => {
                 if (!squarePosition) return;
-                if (selectedPieceId) {
+                if (selectedPieceId && highlight) {
                   movePiece(selectedPieceId, squarePosition);
                   setSelectedPieceId(undefined);
                 }
               }}
             >
-              <span className="absolute top-1 left-1 text-xs text-white/50 select-none">
+              <span className="pointer-events-none absolute top-1 left-1 text-[10px] font-semibold text-white/40 select-none">
                 {squarePosition}
               </span>
             </div>
@@ -66,6 +80,8 @@ export function CheckersBoard() {
         <CheckersPiece
           piece={piece}
           key={piece.id}
+          isSelected={piece.id === selectedPieceId}
+          isActivePlayer={currentPlayer === piece.color}
           onClick={() => {
             if (currentPlayer !== piece.color) return;
             setSelectedPieceId(piece.id);

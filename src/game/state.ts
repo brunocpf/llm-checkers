@@ -15,3 +15,5 @@ export type CheckersGameState = Readonly<{
   boardHistory: Bitboard[];
   moveHistory: CheckersMove[];
 }>;
+
+export const AI_PLAYER_COLOR = "white";
