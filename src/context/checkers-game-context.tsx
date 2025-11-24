@@ -5,6 +5,8 @@ import {
   startTransition,
   use,
   useCallback,
+  useEffect,
+  useEffectEvent,
   useMemo,
   useReducer,
 } from "react";
@@ -16,9 +18,11 @@ import {
 } from "@/game/checkers-game";
 import {
   selectCapturedPieces,
+  selectGameResult,
   selectPieces,
   selectValidMoves,
 } from "@/game/selectors";
+import { CheckersGameState } from "@/game/state";
 import { initialState, reducer } from "@/game/store";
 
 export interface CheckersGameContextType {
@@ -37,6 +41,8 @@ export interface CheckersGameContextType {
   getValidMoves: (
     pieceId: number,
   ) => { to: number; isCapture: boolean; isPromotion: boolean }[];
+  getGameResult: () => `winner:${CheckersPlayerColor}` | "draw" | null;
+  getState: () => CheckersGameState;
 }
 
 export const CheckersGameContext = createContext<CheckersGameContextType>({
@@ -53,6 +59,8 @@ export const CheckersGameContext = createContext<CheckersGameContextType>({
   movePiece: () => {},
   resetGame: () => {},
   getValidMoves: () => [],
+  getGameResult: () => null,
+  getState: () => initialState,
 });
 
 export function CheckersGameProvider({ children }: React.PropsWithChildren) {
@@ -90,6 +98,10 @@ export function CheckersGameProvider({ children }: React.PropsWithChildren) {
     [state],
   );
 
+  const getGameResult = useCallback(() => selectGameResult(state), [state]);
+
+  const getState = useCallback(() => state, [state]);
+
   return (
     <CheckersGameContext.Provider
       value={{
@@ -103,6 +115,8 @@ export function CheckersGameProvider({ children }: React.PropsWithChildren) {
         movePiece,
         resetGame,
         getValidMoves,
+        getGameResult,
+        getState,
       }}
     >
       {children}
@@ -110,4 +124,21 @@ export function CheckersGameProvider({ children }: React.PropsWithChildren) {
   );
 }
 
-export const useCheckersGame = () => use(CheckersGameContext);
+export interface UseCheckersGameOptions {
+  onTurnStart?: (player: CheckersPlayerColor) => void;
+}
+
+export const useCheckersGame = (options?: UseCheckersGameOptions) => {
+  const context = use(CheckersGameContext);
+  const { onTurnStart } = options || {};
+
+  const onTurnStartEvent = useEffectEvent((player: CheckersPlayerColor) =>
+    onTurnStart?.(player),
+  );
+
+  useEffect(() => {
+    onTurnStartEvent(context.currentPlayer);
+  }, [context.currentPlayer]);
+
+  return context;
+};

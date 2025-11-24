@@ -8,3 +8,11 @@ export type CheckersPiece = {
   isKing: boolean;
   position: number;
 };
+
+export type CheckersMove = {
+  pieceId: number;
+  to: number;
+  isPromotion: boolean;
+  isCapture: boolean;
+  canCaptureAgain: boolean;
+};

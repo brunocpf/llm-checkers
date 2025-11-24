@@ -7,7 +7,9 @@ import { useCheckersGame } from "@/context/checkers-game-context";
 import { cn } from "@/lib/utils";
 
 export function CheckersBoard() {
-  const { rows, columns, pieces, movePiece, getValidMoves } = useCheckersGame();
+  const { rows, columns, pieces, currentPlayer, movePiece, getValidMoves } =
+    useCheckersGame();
+
   const [selectedPieceId, setSelectedPieceId] = useState<number>();
   const highlightedPositions = selectedPieceId
     ? getValidMoves(selectedPieceId)
@@ -64,7 +66,10 @@ export function CheckersBoard() {
         <CheckersPiece
           piece={piece}
           key={piece.id}
-          onClick={() => setSelectedPieceId(piece.id)}
+          onClick={() => {
+            if (currentPlayer !== piece.color) return;
+            setSelectedPieceId(piece.id);
+          }}
         />
       ))}
     </>

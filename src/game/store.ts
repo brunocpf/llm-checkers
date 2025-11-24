@@ -5,6 +5,7 @@ import {
   createInitialBitboard,
   decodePiece,
   findPieceById,
+  getValidMoves,
   movePiece,
   validateMove,
 } from "@/game/bitboard";
@@ -21,6 +22,8 @@ export const initialState: CheckersGameState = {
     black: [],
     white: [],
   },
+  boardHistory: [],
+  moveHistory: [],
 };
 
 export function reducer(
@@ -43,6 +46,8 @@ export function reducer(
           black: [],
           white: [],
         },
+        boardHistory: [board],
+        moveHistory: [],
       };
     }
     case "move": {
@@ -53,6 +58,12 @@ export function reducer(
       const piece = findPieceById(state.board, action.pieceId);
 
       if (!piece) {
+        return state;
+      }
+
+      const decodedPiece = decodePiece(piece);
+
+      if (state.currentPlayer !== decodedPiece.color) {
         return state;
       }
 
@@ -68,6 +79,16 @@ export function reducer(
         return state;
       }
 
+      const previousMove = state.moveHistory[state.moveHistory.length - 1];
+
+      if (
+        previousMove?.canCaptureAgain &&
+        previousMove.pieceId !== decodedPiece.id &&
+        !move.isCapture
+      ) {
+        return state;
+      }
+
       const newBoard = move.isCapture
         ? captureAndMovePiece(
             state.board,
@@ -78,9 +99,17 @@ export function reducer(
           )
         : movePiece(state.board, piece, action.to, move.isPromotion);
 
-      const nextPlayer: CheckersPlayerColor =
-        state.currentPlayer === "black" ? "white" : "black";
-      const decodedPiece = decodePiece(piece);
+      const canCaptureAgain = move.isCapture
+        ? getValidMoves(newBoard, piece, state.rows, state.columns).some(
+            (m) => m.isValid && m.isCapture,
+          )
+        : false;
+
+      const nextPlayer: CheckersPlayerColor = canCaptureAgain
+        ? state.currentPlayer
+        : state.currentPlayer === "black"
+          ? "white"
+          : "black";
 
       const newCaptured = {
         ...state.captured,
@@ -95,6 +124,17 @@ export function reducer(
         board: newBoard,
         currentPlayer: nextPlayer,
         captured: newCaptured,
+        boardHistory: [...state.boardHistory, newBoard],
+        moveHistory: [
+          ...state.moveHistory,
+          {
+            pieceId: action.pieceId,
+            to: action.to,
+            isPromotion: move.isPromotion,
+            isCapture: move.isCapture,
+            canCaptureAgain,
+          },
+        ],
       };
 
       return newState;

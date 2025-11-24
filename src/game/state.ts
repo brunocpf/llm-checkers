@@ -1,6 +1,7 @@
 import { Bitboard, BitboardPiece } from "@/game/bitboard";
 import {
   CheckersGameStatus,
+  CheckersMove,
   CheckersPlayerColor,
 } from "@/game/checkers-game";
 
@@ -11,4 +12,6 @@ export type CheckersGameState = Readonly<{
   board: Bitboard;
   currentPlayer: CheckersPlayerColor;
   captured: Record<CheckersPlayerColor, BitboardPiece[]>;
+  boardHistory: Bitboard[];
+  moveHistory: CheckersMove[];
 }>;

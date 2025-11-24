@@ -1,5 +1,5 @@
 import { decodePiece, findPieceById, getValidMoves } from "@/game/bitboard";
-import { CheckersPiece } from "@/game/checkers-game";
+import { CheckersPiece, CheckersPlayerColor } from "@/game/checkers-game";
 import { CheckersGameState } from "@/game/state";
 
 export function selectPieces(state: CheckersGameState): CheckersPiece[] {
@@ -73,4 +73,44 @@ export function selectCapturedPieces(state: CheckersGameState): {
   }
 
   return capturedPieces;
+}
+
+export function selectGameResult(
+  state: CheckersGameState,
+): `winner:${CheckersPlayerColor}` | "draw" | null {
+  const pieces = selectPieces(state);
+  const blackPieces = pieces.filter((piece) => piece.color === "black");
+  const whitePieces = pieces.filter((piece) => piece.color === "white");
+
+  if (blackPieces.length === 0) {
+    return "winner:white";
+  }
+
+  if (whitePieces.length === 0) {
+    return "winner:black";
+  }
+
+  const blackHasMoves = blackPieces.some((piece) => {
+    const moves = selectValidMoves(state, piece.id);
+    return moves.length > 0;
+  });
+
+  const whiteHasMoves = whitePieces.some((piece) => {
+    const moves = selectValidMoves(state, piece.id);
+    return moves.length > 0;
+  });
+
+  if (!blackHasMoves && !whiteHasMoves) {
+    return "draw";
+  }
+
+  if (!blackHasMoves) {
+    return "winner:white";
+  }
+
+  if (!whiteHasMoves) {
+    return "winner:black";
+  }
+
+  return null;
 }
