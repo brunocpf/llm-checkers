@@ -33,3 +33,8 @@ An experiment in building a modern checkers game with React 19 and Next.js 16. I
 - Structured output: Zod schema enforces `{ pieceId, to }`, preventing free-form or illegal moves.
 - Tooling: Custom tools expose only the necessary board facts and valid moves. The model must call `getValidMovesForPiece` before deciding, which aligns model output with enforced rules.
 - Turn loop: Client controls trigger the server function each time it’s the AI’s turn, and the validated move is dispatched back through the shared reducer.
+
+## Setup Notes
+- Requires Node + npm/pnpm. Run `npm install` (or `pnpm install`).
+- Create `.env.local` with `OPENAI_API_KEY=...` so server functions can call the model.
+- Start locally with `npm run dev`; the AI runs through server functions only, never on the client.

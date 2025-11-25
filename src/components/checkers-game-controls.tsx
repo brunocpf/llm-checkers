@@ -70,7 +70,7 @@ export default function CheckersGameControls() {
 
       <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2">
         <div className="rounded-xl border border-slate-800/70 bg-slate-900/60 p-3 shadow-inner shadow-black/30">
-          <div className="text-xs tracking-widest text-slate-400 uppercase">
+          <div className="text-xs tracking-widest text-slate-400 uppercase select-none">
             Current Player
           </div>
           <div className="mt-1 inline-flex items-center gap-3 text-lg font-semibold">
