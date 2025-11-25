@@ -23,7 +23,7 @@ export function CheckersPiece({
     <ViewTransition>
       <button
         className={cn(
-          "@container absolute inset-1 top-[calc(anchor(top)+8px)] right-[calc(anchor(right)+8px)] bottom-[calc(anchor(bottom)+8px)] left-[calc(anchor(left)+8px)] aspect-square translate-y-0 scale-100 transform-gpu rounded-full border-2 shadow-lg transition-transform duration-200 ease-out will-change-[transform,box-shadow] focus-visible:outline-none",
+          "@container absolute top-[anchor(top)] right-[anchor(right)] bottom-[anchor(bottom)] left-[anchor(left)] m-1 aspect-square translate-y-0 scale-100 transform-gpu rounded-full border-2 shadow-lg transition-transform duration-200 ease-out will-change-[transform,box-shadow] focus-visible:outline-none sm:m-2",
           piece.color === "black"
             ? "border-slate-100/70 bg-linear-to-br from-slate-950 via-slate-900 to-slate-700 text-slate-100"
             : "border-amber-700/70 bg-linear-to-br from-amber-50 via-amber-100 to-amber-300 text-amber-900",
